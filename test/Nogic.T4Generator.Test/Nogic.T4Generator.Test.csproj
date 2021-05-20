@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../src/Sample.Core/Sample.Core.csproj" />
+    <ProjectReference Include="../../src/Nogic.T4Generator/Nogic.T4Generator.csproj" />
   </ItemGroup>
 
 </Project>
