@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../src/Nogic.T4Generator/Nogic.T4Generator.csproj" />
+    <ProjectReference Include="../../src/Nogic.T4Generator/Nogic.T4Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
 </Project>

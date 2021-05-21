@@ -2,11 +2,47 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <DevelopmentDependency>true</DevelopmentDependency>
+    <IsRoslynComponent>true</IsRoslynComponent>
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);PackBuildOutputs</TargetsForTfmSpecificContentInPackage>
+    <GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <IncludeSymbols>false</IncludeSymbols>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <Description>C# Source Generator for T4(Text Template Transformation Toolkit).</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.2">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
+    <PackageReference Include="Mono.TextTemplating" Version="2.2.1" GeneratePathProperty="true" PrivateAssets="all" />
+    <PackageReference Include="Mono.TextTemplating.Roslyn" Version="2.2.1" GeneratePathProperty="true" PrivateAssets="all" />
+    <PackageReference Include="System.CodeDom" Version="4.4.0" GeneratePathProperty="true" PrivateAssets="all" />
+  </ItemGroup>
+
+  <Target Name="GetDependencyTargetPaths">
+    <ItemGroup>
+      <TargetPathWithTargetPlatformMoniker Include="$(PkgSystem_CodeDom)\lib\netstandard2.0\*.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PkgMono_TextTemplating)\lib\netstandard2.0\*.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PkgMono_TextTemplating_Roslyn)\lib\netstandard2.0\*.dll" IncludeRuntimeDependency="false" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="PackBuildOutputs" DependsOnTargets="SatelliteDllsProjectOutputGroup;DebugSymbolsProjectOutputGroup">
+    <ItemGroup>
+      <TfmSpecificPackageFile Include="$(TargetDir)\*.dll" PackagePath="analyzers\dotnet\cs" />
+      <TfmSpecificPackageFile Include="$(PkgSystem_CodeDom)\lib\netstandard2.0\*.dll" PackagePath="analyzers\dotnet\cs" />
+      <TfmSpecificPackageFile Include="$(PkgMono_TextTemplating)\lib\netstandard2.0\*.dll" PackagePath="analyzers\dotnet\cs" />
+      <TfmSpecificPackageFile Include="$(PkgMono_TextTemplating_Roslyn)\lib\netstandard2.0\*.dll" PackagePath="analyzers\dotnet\cs" />
+      <TfmSpecificPackageFile Include="@(SatelliteDllsProjectOutputGroupOutput->'%(FinalOutputPath)')" PackagePath="analyzers\dotnet\cs\%(SatelliteDllsProjectOutputGroupOutput.Culture)\" />
+    </ItemGroup>
+  </Target>
 
 </Project>
